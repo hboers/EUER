@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 declare(strict_types=1);
 
-const HEADERS = ['Buchung', 'Beleg', 'Beschreibung', 'Typ', 'Netto', 'UST/VST', 'UST/VST %', 'RC'];
+const HEADERS = ['Buchung', 'Beleg', 'Beschreibung', 'Typ', 'Netto', 'UST/VST', 'UST/VST %', 'RC', 'Land'];
 
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 if (!in_array($requestPath, ['/', '/index.php'], true)) { http_response_code(404); exit('Nicht gefunden'); }
@@ -24,6 +24,34 @@ function loadEnv(string $path): array {
         $values[trim($key)] = trim(trim($value), "'\"");
     }
     return $values;
+}
+function countryOptions(): array {
+    return [
+        'AD'=>'Andorra','AE'=>'Vereinigte Arabische Emirate','AF'=>'Afghanistan','AG'=>'Antigua und Barbuda','AI'=>'Anguilla','AL'=>'Albanien','AM'=>'Armenien','AO'=>'Angola','AQ'=>'Antarktis','AR'=>'Argentinien','AS'=>'Amerikanisch-Samoa','AT'=>'Österreich','AU'=>'Australien','AW'=>'Aruba','AX'=>'Ålandinseln','AZ'=>'Aserbaidschan',
+        'BA'=>'Bosnien und Herzegowina','BB'=>'Barbados','BD'=>'Bangladesch','BE'=>'Belgien','BF'=>'Burkina Faso','BG'=>'Bulgarien','BH'=>'Bahrain','BI'=>'Burundi','BJ'=>'Benin','BL'=>'Saint-Barthélemy','BM'=>'Bermuda','BN'=>'Brunei Darussalam','BO'=>'Bolivien','BQ'=>'Bonaire, Sint Eustatius und Saba','BR'=>'Brasilien','BS'=>'Bahamas','BT'=>'Bhutan','BV'=>'Bouvetinsel','BW'=>'Botswana','BY'=>'Belarus','BZ'=>'Belize',
+        'CA'=>'Kanada','CC'=>'Kokosinseln','CD'=>'Demokratische Republik Kongo','CF'=>'Zentralafrikanische Republik','CG'=>'Republik Kongo','CH'=>'Schweiz','CI'=>'Côte d’Ivoire','CK'=>'Cookinseln','CL'=>'Chile','CM'=>'Kamerun','CN'=>'China','CO'=>'Kolumbien','CR'=>'Costa Rica','CU'=>'Kuba','CV'=>'Cabo Verde','CW'=>'Curaçao','CX'=>'Weihnachtsinsel','CY'=>'Zypern','CZ'=>'Tschechien',
+        'DE'=>'Deutschland','DJ'=>'Dschibuti','DK'=>'Dänemark','DM'=>'Dominica','DO'=>'Dominikanische Republik','DZ'=>'Algerien',
+        'EC'=>'Ecuador','EE'=>'Estland','EG'=>'Ägypten','EH'=>'Westsahara','ER'=>'Eritrea','ES'=>'Spanien','ET'=>'Äthiopien',
+        'FI'=>'Finnland','FJ'=>'Fidschi','FK'=>'Falklandinseln','FM'=>'Mikronesien','FO'=>'Färöer','FR'=>'Frankreich',
+        'GA'=>'Gabun','GB'=>'Vereinigtes Königreich','GD'=>'Grenada','GE'=>'Georgien','GF'=>'Französisch-Guayana','GG'=>'Guernsey','GH'=>'Ghana','GI'=>'Gibraltar','GL'=>'Grönland','GM'=>'Gambia','GN'=>'Guinea','GP'=>'Guadeloupe','GQ'=>'Äquatorialguinea','GR'=>'Griechenland','GS'=>'Südgeorgien und die Südlichen Sandwichinseln','GT'=>'Guatemala','GU'=>'Guam','GW'=>'Guinea-Bissau','GY'=>'Guyana',
+        'HK'=>'Hongkong','HM'=>'Heard und McDonaldinseln','HN'=>'Honduras','HR'=>'Kroatien','HT'=>'Haiti','HU'=>'Ungarn',
+        'ID'=>'Indonesien','IE'=>'Irland','IL'=>'Israel','IM'=>'Isle of Man','IN'=>'Indien','IO'=>'Britisches Territorium im Indischen Ozean','IQ'=>'Irak','IR'=>'Iran','IS'=>'Island','IT'=>'Italien',
+        'JE'=>'Jersey','JM'=>'Jamaika','JO'=>'Jordanien','JP'=>'Japan',
+        'KE'=>'Kenia','KG'=>'Kirgisistan','KH'=>'Kambodscha','KI'=>'Kiribati','KM'=>'Komoren','KN'=>'St. Kitts und Nevis','KP'=>'Nordkorea','KR'=>'Südkorea','KW'=>'Kuwait','KY'=>'Kaimaninseln','KZ'=>'Kasachstan',
+        'LA'=>'Laos','LB'=>'Libanon','LC'=>'St. Lucia','LI'=>'Liechtenstein','LK'=>'Sri Lanka','LR'=>'Liberia','LS'=>'Lesotho','LT'=>'Litauen','LU'=>'Luxemburg','LV'=>'Lettland','LY'=>'Libyen',
+        'MA'=>'Marokko','MC'=>'Monaco','MD'=>'Moldau','ME'=>'Montenegro','MF'=>'Saint-Martin (französischer Teil)','MG'=>'Madagaskar','MH'=>'Marshallinseln','MK'=>'Nordmazedonien','ML'=>'Mali','MM'=>'Myanmar','MN'=>'Mongolei','MO'=>'Macau','MP'=>'Nördliche Marianen','MQ'=>'Martinique','MR'=>'Mauretanien','MS'=>'Montserrat','MT'=>'Malta','MU'=>'Mauritius','MV'=>'Malediven','MW'=>'Malawi','MX'=>'Mexiko','MY'=>'Malaysia','MZ'=>'Mosambik',
+        'NA'=>'Namibia','NC'=>'Neukaledonien','NE'=>'Niger','NF'=>'Norfolkinsel','NG'=>'Nigeria','NI'=>'Nicaragua','NL'=>'Niederlande','NO'=>'Norwegen','NP'=>'Nepal','NR'=>'Nauru','NU'=>'Niue','NZ'=>'Neuseeland',
+        'OM'=>'Oman',
+        'PA'=>'Panama','PE'=>'Peru','PF'=>'Französisch-Polynesien','PG'=>'Papua-Neuguinea','PH'=>'Philippinen','PK'=>'Pakistan','PL'=>'Polen','PM'=>'Saint-Pierre und Miquelon','PN'=>'Pitcairninseln','PR'=>'Puerto Rico','PS'=>'Palästinensische Gebiete','PT'=>'Portugal','PW'=>'Palau','PY'=>'Paraguay',
+        'QA'=>'Katar',
+        'RE'=>'Réunion','RO'=>'Rumänien','RS'=>'Serbien','RU'=>'Russland','RW'=>'Ruanda',
+        'SA'=>'Saudi-Arabien','SB'=>'Salomonen','SC'=>'Seychellen','SD'=>'Sudan','SE'=>'Schweden','SG'=>'Singapur','SH'=>'St. Helena, Ascension und Tristan da Cunha','SI'=>'Slowenien','SJ'=>'Spitzbergen und Jan Mayen','SK'=>'Slowakei','SL'=>'Sierra Leone','SM'=>'San Marino','SN'=>'Senegal','SO'=>'Somalia','SR'=>'Suriname','SS'=>'Südsudan','ST'=>'São Tomé und Príncipe','SV'=>'El Salvador','SX'=>'Sint Maarten (niederländischer Teil)','SY'=>'Syrien','SZ'=>'Eswatini',
+        'TC'=>'Turks- und Caicosinseln','TD'=>'Tschad','TF'=>'Französische Süd- und Antarktisgebiete','TG'=>'Togo','TH'=>'Thailand','TJ'=>'Tadschikistan','TK'=>'Tokelau','TL'=>'Timor-Leste','TM'=>'Turkmenistan','TN'=>'Tunesien','TO'=>'Tonga','TR'=>'Türkei','TT'=>'Trinidad und Tobago','TV'=>'Tuvalu','TW'=>'Taiwan','TZ'=>'Tansania',
+        'UA'=>'Ukraine','UG'=>'Uganda','UM'=>'Kleinere Amerikanische Überseeinseln','US'=>'Vereinigte Staaten','UY'=>'Uruguay','UZ'=>'Usbekistan',
+        'VA'=>'Vatikanstadt','VC'=>'St. Vincent und die Grenadinen','VE'=>'Venezuela','VG'=>'Britische Jungferninseln','VI'=>'Amerikanische Jungferninseln','VN'=>'Vietnam','VU'=>'Vanuatu',
+        'WF'=>'Wallis und Futuna','WS'=>'Samoa',
+        'YE'=>'Jemen','YT'=>'Mayotte','ZA'=>'Südafrika','ZM'=>'Sambia','ZW'=>'Simbabwe'
+    ];
 }
 function stagedPath(int $year): string {
     return __DIR__ . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . 'Staged.csv';
@@ -111,11 +139,12 @@ function migrateLedgerSchema(string $path): bool {
     $header = fgetcsv($fp, 0, ';'); fclose($fp);
     $legacyBrutto = is_array($header) && in_array('Brutto', $header, true);
     $legacyRc = !is_array($header) || !in_array('RC', $header, true);
+    $legacyCountry = !is_array($header) || !in_array('Land', $header, true);
     $rateMarker = dirname($path) . DIRECTORY_SEPARATOR . '.' . basename($path) . '.integer-rate';
     $legacyRate = !is_file($rateMarker);
     $incomeMarker = dirname($path) . DIRECTORY_SEPARATOR . '.' . basename($path) . '.income-type';
     $legacyIncome = !is_file($incomeMarker);
-    if (!$legacyBrutto && !$legacyRate && !$legacyIncome && !$legacyRc) return true;
+    if (!$legacyBrutto && !$legacyRate && !$legacyIncome && !$legacyRc && !$legacyCountry) return true;
     $rows = readLedger($path);
     if ($legacyRate || $legacyIncome) {
         foreach ($rows as &$row) {
@@ -172,38 +201,6 @@ function archivePdfPath(string $archiveDir, int $year, string $receiptId): strin
     $path = $matches ? realpath($matches[0]) : false;
     return $path && str_starts_with($path, $yearDir . DIRECTORY_SEPARATOR) ? $path : false;
 }
-function sqliteExtractionCache(string $dbPath, array $request): array|false {
-    if (($request['mode'] ?? '') === 'delete' && !is_file($dbPath)) return ['ok'=>true];
-    $script = <<<'PY'
-import json, sqlite3, sys
-p=json.load(sys.stdin)
-conn=sqlite3.connect(p['db'])
-conn.execute('''CREATE TABLE IF NOT EXISTS pdf_extractions (
- cache_key TEXT PRIMARY KEY, year INTEGER NOT NULL, receipt_id TEXT NOT NULL,
- pdf_path TEXT NOT NULL, mtime INTEGER NOT NULL, file_size INTEGER NOT NULL,
- extracted_at TEXT NOT NULL, data_json TEXT NOT NULL)''')
-mode=p['mode']
-if mode=='get':
- r=conn.execute('SELECT data_json FROM pdf_extractions WHERE cache_key=? AND mtime=? AND file_size=?',(p['key'],p['mtime'],p['size'])).fetchone()
- print(json.dumps({'ok':True,'data':json.loads(r[0]) if r else None}))
-elif mode=='set':
- conn.execute('''INSERT INTO pdf_extractions VALUES(?,?,?,?,?,?,datetime('now'),?)
- ON CONFLICT(cache_key) DO UPDATE SET year=excluded.year, receipt_id=excluded.receipt_id, pdf_path=excluded.pdf_path, mtime=excluded.mtime, file_size=excluded.file_size, extracted_at=excluded.extracted_at, data_json=excluded.data_json''',(p['key'],p['year'],p['receipt_id'],p['key'],p['mtime'],p['size'],json.dumps(p['data'],ensure_ascii=False)))
- conn.commit(); print(json.dumps({'ok':True}))
-elif mode=='delete':
- conn.execute('DELETE FROM pdf_extractions WHERE year=? AND receipt_id=?',(p['year'],p['receipt_id']))
- conn.commit(); print(json.dumps({'ok':True,'deleted':conn.total_changes}))
-conn.close()
-PY;
-    $proc = @proc_open(['python3', '-c', $script], [0=>['pipe','r'],1=>['pipe','w'],2=>['pipe','w']], $pipes);
-    if (!is_resource($proc)) return false;
-    $request['db'] = $dbPath;
-    fwrite($pipes[0], json_encode($request, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)); fclose($pipes[0]);
-    $stdout = stream_get_contents($pipes[1]); fclose($pipes[1]); $stderr = stream_get_contents($pipes[2]); fclose($pipes[2]);
-    if (proc_close($proc) !== 0) return false;
-    $result = json_decode($stdout, true);
-    return is_array($result) && ($result['ok'] ?? false) ? $result : false;
-}
 function pdfText(string $path): string|false {
     $proc = @proc_open(['pdftotext','-layout','-enc','UTF-8',$path,'-'], [0=>['pipe','r'],1=>['pipe','w'],2=>['pipe','w']], $pipes);
     if (!is_resource($proc)) return false;
@@ -240,15 +237,11 @@ function extractPdfFields(string $text): array {
     if ($result['net']!=='' && $result['tax']!=='' && abs((float)$result['net'])>0.000001) $result['rate']=(string)(int)round(abs((float)$result['tax']/(float)$result['net'])*100);
     return $result;
 }
-function extractedPdfFields(string $dbPath, string $pdfPath, int $year, string $receiptId): array|false {
-    $mtime=(int)filemtime($pdfPath); $size=(int)filesize($pdfPath);
-    $cached=sqliteExtractionCache($dbPath,['mode'=>'get','key'=>$pdfPath,'mtime'=>$mtime,'size'=>$size]);
-    if ($cached!==false && is_array($cached['data'] ?? null) && ($cached['data']['_version'] ?? 0) === 5) return $cached['data'];
+function extractedPdfFields(string $pdfPath): array|false {
     $text=pdfText($pdfPath); if ($text===false) return false;
     $data=extractPdfFields($text);
     $data['_version']=5;
     $data['_note']=$text===''?'PDF enthält keinen durchsuchbaren Text.':'Datum aus der Rechnung; bitte Buchungsdatum und extrahierte Werte vor Übernahme prüfen. Wenn nur ein Bruttobetrag erkannt wurde, wurde er als Netto mit 0 % vorgeschlagen.';
-    if (sqliteExtractionCache($dbPath,['mode'=>'set','key'=>$pdfPath,'year'=>$year,'receipt_id'=>$receiptId,'mtime'=>$mtime,'size'=>$size,'data'=>$data])===false) return false;
     return $data;
 }
 function validYear(mixed $v): int { $n = filter_var($v, FILTER_VALIDATE_INT); return $n !== false && $n >= 2000 && $n <= 2100 ? $n : (int)date('Y'); }
@@ -383,8 +376,7 @@ function rowMatchesFilter(array $row, string $filter, string $dateFrom, string $
     // Keep undated staged documents visible so they can be completed in the form.
     if ($date !== '' && (($dateFrom !== '' && $date < $dateFrom) || ($dateTo !== '' && $date > $dateTo))) return false;
     if ($filter === '') return true;
-    $searchable = array_intersect_key($row, array_flip([0,1,2,3]));
-    $text = implode(' ', array_map(static fn($value) => (string)$value, $searchable));
+    $text = implode(' ', array_map(static fn($value) => (string)$value, $row));
     if (stripos($text, $filter) !== false) return true;
     $pattern = '~' . str_replace('~', '\\~', $filter) . '~iu';
     return @preg_match($pattern, $text) === 1;
@@ -392,6 +384,7 @@ function rowMatchesFilter(array $row, string $filter, string $dateFrom, string $
 function rowFromPost(?string &$conversionNote = null, ?string &$conversionError = null): array {
     $row = [];
     foreach (HEADERS as $i => $key) $row[] = trim((string)($_POST['entry'][$i] ?? ''));
+    if ($row[8] !== '' && !isset(countryOptions()[$row[8]])) $row[8] = '';
     $conversionNote = '';
     $conversionError = '';
     $usdFields = [];
@@ -448,6 +441,13 @@ if (isset($_GET['download'])) {
 $env = loadEnv(__DIR__ . '/.env');
 $archive = $env['PDF_ARCHIVE'] ?? '../PDF_Archive';
 $archiveDir = realpath(__DIR__ . DIRECTORY_SEPARATOR . $archive) ?: (__DIR__ . DIRECTORY_SEPARATOR . $archive);
+$archiveExists = is_dir($archiveDir);
+$countryList = countryOptions();
+$countriesByGroup = [];
+foreach (['EU', 'NONEU'] as $group) {
+    $codes = array_values(array_unique(array_filter(array_map('trim', explode(',', $env[$group] ?? '')), static fn($code) => $code !== '' && isset($countryList[$code]))));
+    $countriesByGroup[$group] = array_intersect_key($countryList, array_flip($codes));
+}
 $typeOptions = ['Einnahmen','Leistung','Ware','Sonstiges','Spenden'];
 $defaultType = in_array($env['EUER_DEFAULT_TYPE'] ?? 'Leistung', $typeOptions, true) ? ($env['EUER_DEFAULT_TYPE'] ?? 'Leistung') : 'Leistung';
 if (isset($_GET['beleg']) && is_string($_GET['beleg']) && preg_match('/^\d{10}$/', $_GET['beleg'])) {
@@ -491,9 +491,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $rows[] = $candidate; array_splice($stagedRows, $index, 1);
                 if (writeLedger($file, $rows) && writeLedger($stagedFile, $stagedRows)) {
                     if ($stagedRows) $nextStageIndex = $index < count($stagedRows) ? $index : count($stagedRows) - 1;
-                    $cacheDb = __DIR__ . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . 'extraction-cache.sqlite';
-                    $cacheRemoved = sqliteExtractionCache($cacheDb, ['mode'=>'delete','year'=>$year,'receipt_id'=>$candidate[1]]);
-                    $message = $cacheRemoved !== false ? 'Beleg einzeln nach EUER.csv übernommen.' : 'Beleg übernommen; SQLite-Cache konnte nicht gelöscht werden.';
+                    $message = 'Beleg einzeln nach EUER.csv übernommen.';
                     if ($conversionNote !== '') $message .= ' ' . $conversionNote;
                 } else $message = 'CSV-Datei konnte nicht vollständig aktualisiert werden; Sicherungen liegen in backups/.';
             }
@@ -568,7 +566,7 @@ $stageSelected = filter_var($_GET['stage_edit'] ?? null, FILTER_VALIDATE_INT);
 $stageActive = filter_var($_GET['stage_active'] ?? $_GET['stage_edit'] ?? null, FILTER_VALIDATE_INT);
 if ($stageActive === false || $stageActive === null || !isset($stagedRows[$stageActive])) $stageActive = null;
 $isStageEditing = $stageSelected !== false && $stageSelected !== null && isset($stagedRows[$stageSelected]);
-$activeTab = is_string($_GET['tab'] ?? null) && in_array($_GET['tab'], ['list','form','stage'], true) ? $_GET['tab'] : (($isStageEditing || ($selected !== false && $selected !== null && isset($rows[$selected]))) ? 'form' : 'list');
+$activeTab = is_string($_GET['tab'] ?? null) && in_array($_GET['tab'] ?? '', ['list','form','stage','vorsteuer','jahreserklaerung'], true) ? $_GET['tab'] : (($isStageEditing || ($selected !== false && $selected !== null && isset($rows[$selected]))) ? 'form' : 'list');
 $filter = is_string($_REQUEST['q'] ?? null) ? trim($_REQUEST['q']) : '';
 $dateFromInput = $_REQUEST['date_from'] ?? null;
 $dateToInput = $_REQUEST['date_to'] ?? null;
@@ -577,6 +575,11 @@ $dateTo = is_string($dateToInput) && validIsoDate($dateToInput) ? $dateToInput :
 $editing = $isStageEditing ? $stagedRows[$stageSelected] : (($selected !== false && $selected !== null && isset($rows[$selected])) ? $rows[$selected] : array_fill(0, count(HEADERS), ''));
 if (!$isStageEditing && ($selected === false || $selected === null) && ($editing[3] ?? '') === '') $editing[3] = $defaultType;
 if ($preservedFormRow !== null) $editing = $preservedFormRow;
+if (($editing[8] ?? '') === '') {
+    $countryText = (string)($editing[2] ?? '');
+    $defaultCountry = preg_match('/open\s*ai/i', $countryText) ? 'US' : 'DE';
+    if (isset($countriesByGroup['EU'][$defaultCountry]) || isset($countriesByGroup['NONEU'][$defaultCountry])) $editing[8] = $defaultCountry;
+}
 $formEditing = $editing;
 if (in_array($editing[3] ?? '', ['Leistung','Ware'], true)) {
     foreach ([4,5] as $i) if (isset($formEditing[$i]) && is_numeric($formEditing[$i])) $formEditing[$i] = (string)(-(float)$formEditing[$i]);
@@ -589,8 +592,7 @@ if (($isStageEditing || ($selected !== false && $selected !== null && isset($row
 }
 $extractionNote = '';
 if ($isStageEditing && $previewPdf) {
-    $cacheDb = __DIR__ . DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . 'extraction-cache.sqlite';
-    $extracted = extractedPdfFields($cacheDb, $previewPdf, $year, $editing[1]);
+    $extracted = extractedPdfFields($previewPdf);
     if ($extracted !== false) {
         $extractionNote = (string)($extracted['_note'] ?? '');
         $fieldMap = [0=>'date', 4=>'net', 5=>'tax', 6=>'rate'];
@@ -628,22 +630,101 @@ $incomeNet = $sumColumn($incomeRows, 4);
 $incomeVat = $sumColumn($incomeRows, 5);
 $expenseNet = abs($sumColumn($expenseRows, 4));
 $expenseVat = abs($sumColumn($expenseRows, 5));
+$reverseChargeRows = array_filter($filteredRows, static fn($row) => (string)($row[7] ?? '') === '1');
+$regularVatRows = array_filter($filteredRows, static fn($row) => (string)($row[7] ?? '') !== '1');
+$reverseChargeVat = array_sum(array_map(static fn($row) => abs((float)str_replace(',', '.', (string)($row[5] ?? '0'))), $reverseChargeRows));
+$vatIncludingRc = $sumColumn($regularVatRows, 5) + $reverseChargeVat;
+$vatResult = $vatIncludingRc - $reverseChargeVat;
 $grossBalance = array_sum(array_map(static fn($row) => calculatedAmount($row) ?? 0.0, array_merge($incomeRows, $expenseRows)));
+$calculateRcTotals = static function(array $ledgerRows) use ($countriesByGroup): array {
+    $totals = ['euBase'=>0.0,'euTax'=>0.0,'otherBase'=>0.0,'otherTax'=>0.0];
+    foreach ($ledgerRows as $row) {
+        if ((string)($row[7] ?? '') !== '1') continue;
+        $country = strtoupper(trim((string)($row[8] ?? '')));
+        if ($country === '') $country = preg_match('/open\s*ai/i', (string)($row[2] ?? '')) ? 'US' : 'DE';
+        $base = abs((float)str_replace(',', '.', (string)($row[4] ?? '0')));
+        $tax = abs((float)str_replace(',', '.', (string)($row[5] ?? '0')));
+        if ($country !== 'DE' && isset($countriesByGroup['EU'][$country])) {
+            $totals['euBase'] += $base;
+            $totals['euTax'] += $tax;
+        } else {
+            $totals['otherBase'] += $base;
+            $totals['otherTax'] += $tax;
+        }
+    }
+    return $totals;
+};
+$vatReportRows = array_filter($rows, static function(array $row) use ($dateFrom, $dateTo): bool {
+    $date = (string)($row[0] ?? '');
+    return validIsoDate($date) && $date >= $dateFrom && $date <= $dateTo;
+});
+$calculateElsterTotals = static function(array $ledgerRows) use ($calculateRcTotals): array {
+    $totals = ['sales19Base'=>0.0,'sales19Tax'=>0.0,'sales7Base'=>0.0,'sales7Tax'=>0.0,'salesOtherBase'=>0.0,'salesOtherTax'=>0.0,'inputTax'=>0.0];
+    foreach ($ledgerRows as $row) {
+        $type = trim((string)($row[3] ?? ''));
+        $net = (float)str_replace(',', '.', (string)($row[4] ?? '0'));
+        $tax = (float)str_replace(',', '.', (string)($row[5] ?? '0'));
+        $rate = (float)str_replace(',', '.', (string)($row[6] ?? '0'));
+        $isRc = (string)($row[7] ?? '') === '1';
+        if ($type === 'Einnahmen' && !$isRc) {
+            if (abs($rate - 19) < 0.001) { $totals['sales19Base'] += $net; $totals['sales19Tax'] += $tax; }
+            elseif (abs($rate - 7) < 0.001) { $totals['sales7Base'] += $net; $totals['sales7Tax'] += $tax; }
+            elseif ($rate > 0) { $totals['salesOtherBase'] += $net; $totals['salesOtherTax'] += $tax; }
+        } elseif (!$isRc && !in_array($type, ['Einnahmen','Spenden'], true)) {
+            $totals['inputTax'] += abs($tax);
+        }
+    }
+    $totals['rc'] = $calculateRcTotals($ledgerRows);
+    $totals['rcInputTax'] = $totals['rc']['euTax'] + $totals['rc']['otherTax'];
+    $totals['vatDue'] = $totals['sales19Tax'] + $totals['sales7Tax'] + $totals['salesOtherTax'] + $totals['rcInputTax'] - $totals['inputTax'] - $totals['rcInputTax'];
+    return $totals;
+};
+$vatReport = $calculateElsterTotals($vatReportRows);
+$annualYear = $year - 1;
+$annualCandidates = [
+    __DIR__ . DIRECTORY_SEPARATOR . $annualYear . DIRECTORY_SEPARATOR . 'EUER.csv',
+    __DIR__ . DIRECTORY_SEPARATOR . $annualYear . '.csv',
+];
+$annualCsvPath = null;
+foreach ($annualCandidates as $candidatePath) if (is_file($candidatePath)) { $annualCsvPath = $candidatePath; break; }
+$annualAvailable = $annualCsvPath !== null;
+$annualReport = $calculateElsterTotals($annualAvailable ? readLedger($annualCsvPath) : []);
+$vatUstvaRows = [
+    ['81','Steuerpflichtige Umsätze 19 %',$vatReport['sales19Base'],$vatReport['sales19Tax']],
+    ['86','Steuerpflichtige Umsätze 7 %',$vatReport['sales7Base'],$vatReport['sales7Tax']],
+    ['35 / 36','Umsätze zu anderen Steuersätzen',$vatReport['salesOtherBase'],$vatReport['salesOtherTax']],
+    ['46 / 47','§ 13b: sonstige Leistungen EU',$vatReport['rc']['euBase'],$vatReport['rc']['euTax']],
+    ['84 / 85','§ 13b: andere Leistungen',$vatReport['rc']['otherBase'],$vatReport['rc']['otherTax']],
+    ['66','Abziehbare Vorsteuer aus Rechnungen',null,$vatReport['inputTax']],
+    ['67','Abziehbare Vorsteuer aus § 13b',null,$vatReport['rcInputTax']],
+    ['83','Verbleibende Umsatzsteuer-Vorauszahlung / Überschuss',null,$vatReport['vatDue']],
+];
+$vatAnnualRows = [
+    ['177','Steuerpflichtige Umsätze 19 %',$annualReport['sales19Base'],$annualReport['sales19Tax']],
+    ['275','Steuerpflichtige Umsätze 7 %',$annualReport['sales7Base'],$annualReport['sales7Tax']],
+    ['155 / 156','Umsätze zu anderen Steuersätzen',$annualReport['salesOtherBase'],$annualReport['salesOtherTax']],
+    ['846 / 847','§ 13b: sonstige Leistungen EU',$annualReport['rc']['euBase'],$annualReport['rc']['euTax']],
+    ['877 / 878','§ 13b: andere Leistungen',$annualReport['rc']['otherBase'],$annualReport['rc']['otherTax']],
+    ['320','Abziehbare Vorsteuer aus Rechnungen',null,$annualReport['inputTax']],
+    ['467','Abziehbare Vorsteuer aus § 13b',null,$annualReport['rcInputTax']],
+];
+$reportBase = static fn(?float $value): string => $value === null ? '—' : number_format(round($value), 0, ',', '.') . ' €';
+$reportTax = static fn(float $value): string => number_format($value, 2, ',', '.') . ' €';
 $message = is_string($_GET['msg'] ?? null) ? $_GET['msg'] : $message;
 ?>
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>EÜR <?=h((string)$year)?></title>
 <style>
-:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#202733;background:#f3f5f8}*{box-sizing:border-box}body{margin:0}.top{padding:14px 22px;background:#17324d;color:white;display:flex;gap:18px;align-items:center;justify-content:space-between}.top h1{font-size:1.25rem;margin:0}.top small{opacity:.8}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.date-range{display:flex;align-items:center;gap:0;margin:0;overflow:hidden;border-radius:5px;background:#e5eaf0}.date-range label{display:flex;align-items:center;gap:4px;padding:0 8px;color:#243344;font-size:.8rem;white-space:nowrap}.date-range input{height:38px;min-width:132px;padding:8px 5px;border:0;background:transparent;color:#243344;font:inherit}.date-range .date-separator{height:38px;padding:8px 10px;border-right:1px solid #cbd4de;border-left:1px solid #cbd4de;border-radius:0;background:#f0f2f5;color:#526174;cursor:default}.date-range .btn[type=submit]{height:38px;padding:8px 10px;border-left:1px solid #cbd4de;border-radius:0}.button-group{display:flex;align-items:center;overflow:hidden;border-radius:5px}.button-group form{margin:0}.button-group select{height:38px;padding:9px 13px;border:0;border-right:1px solid #cbd4de;background:#e5eaf0;color:#243344;font:inherit;cursor:pointer}.button-group .btn{height:38px;border-radius:0;padding:9px 13px}.layout{display:grid;grid-template-columns:minmax(350px,1fr) minmax(320px,1fr);gap:16px;padding:16px;max-width:1600px;margin:auto}.left-column{display:grid;gap:16px;align-content:start;min-width:0}.tabs{display:flex;gap:4px;border-bottom:1px solid #cbd4de}.tab{padding:9px 15px;color:#334155;text-decoration:none;border-radius:6px 6px 0 0}.tab.active{background:#1769aa;color:white}.preview-panel{position:sticky;top:16px;height:calc(100vh - 100px);min-height:420px}.preview-filename{padding:8px 14px;border-bottom:1px solid #e3e7ec;font-size:.85rem;color:#526174;overflow-wrap:anywhere}.pdf-preview{display:block;width:100%;height:calc(100% - 84px);border:0;background:#e9edf2}.panel{background:white;border:1px solid #d8dee7;border-radius:9px;box-shadow:0 2px 8px #2233440c;overflow:hidden}.panel h2{font-size:1rem;margin:0;padding:14px 16px;border-bottom:1px solid #e3e7ec}.filter-bar{padding:10px 12px;display:flex;gap:8px;border-bottom:1px solid #e3e7ec}.filter-bar input{flex:1;min-width:0;padding:8px 10px;border:1px solid #bbc5d0;border-radius:5px;font:inherit}.listing{max-height:42vh;overflow:auto}.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.entry{display:grid;grid-template-columns:88px 84px minmax(70px,1fr) 82px;gap:8px;padding:9px 12px;border-bottom:1px solid #edf0f3;align-items:center;font-size:.88rem}.bookings-listing .entry{grid-template-columns:78px 84px minmax(70px,1fr) 72px 90px}.stage-listing .entry{grid-template-columns:78px 84px minmax(70px,1fr) 72px 90px}.bookings-listing .entry>span:first-child,.stage-listing .entry>span:first-child{white-space:nowrap}.entry.head{position:sticky;top:0;background:#eef2f6;font-weight:650;z-index:1}.entry.active{background:#e8f2fb}.entry.invalid{box-shadow:inset 3px 0 #c52a36}.entry:not(.head):hover{background:#f0f6fc}.entry a{color:inherit;text-decoration:none}.entry a:hover{text-decoration:underline}.desc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.money{text-align:right;font-variant-numeric:tabular-nums}.negative{color:#b4232d;font-weight:600}.missing{display:block;color:#b4232d;font-size:.7rem;white-space:nowrap}.missing-ref{color:#b4232d!important;font-weight:700}.form{padding:16px}.form label{display:block;font-size:.85rem;font-weight:600;margin:0 0 12px} .form input,.form select{width:100%;padding:9px;border:1px solid #bbc5d0;border-radius:5px;margin-top:4px;font:inherit}.form input[type=checkbox]{width:auto;padding:0;vertical-align:middle}.form label.field-7 input[type=checkbox]{display:block;width:18px;height:18px;margin:9px 0 0}.form input[readonly]{background:#f2f5f8;color:#526174}.input-with-unit{display:flex;align-items:center;gap:7px;margin-top:4px}.form .input-with-unit input{margin-top:0;text-align:right}.form label.invalid-field input,.form label.invalid-field select{border-color:#c52a36;background:#fff5f5;box-shadow:0 0 0 2px #c52a3622}.form label.invalid-field{color:#a51f2b}.input-unit{color:#526174;white-space:nowrap}.fields{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.wide{grid-column:1/-1}@media(min-width:992px){.fields{grid-template-columns:repeat(12,minmax(0,1fr))}.fields label{grid-column:span 6}.fields label:nth-child(-n+3){grid-column:span 4}.fields label.wide{grid-column:1/-1}.fields label.field-4,.fields label.field-5,.fields label.field-6}.btn{border:0;border-radius:5px;background:#1769aa;color:white;text-decoration:none;padding:9px 13px;font:inherit;cursor:pointer}.btn.secondary{background:#e5eaf0;color:#243344}.btn.danger{background:#a32b32}.actions{display:flex;gap:8px;align-items:center}.actions .new-entry{margin-left:auto}.notice{margin:12px 16px 0;padding:10px;background:#e9f5e9;border-radius:5px}.extraction-note{margin:10px 16px;padding:10px 12px;border-radius:5px;background:#fff4d6;color:#744d00;font-size:.9rem}.empty{padding:18px;color:#657386}.sum{padding:10px 14px;background:#f7f9fb;text-align:right;font-weight:650}.summary-table{padding:8px 14px;background:#f7f9fb}.summary-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(90px,130px) minmax(90px,130px);gap:8px;padding:5px 0;text-align:right;font-variant-numeric:tabular-nums}.summary-row span:first-child,.summary-row strong:first-child{text-align:left}.summary-head{font-size:.8rem;color:#526174;border-bottom:1px solid #d8dee7}.summary-result{border-top:1px solid #d8dee7;margin-top:4px;font-weight:700}form.inline{display:inline}@media(max-width:850px){.layout{grid-template-columns:1fr}.listing{max-height:55vh}.top{align-items:flex-start;flex-direction:column}.entry{grid-template-columns:75px 68px minmax(70px,1fr) 70px}.bookings-listing .entry{grid-template-columns:62px 68px minmax(48px,1fr) 52px 60px}.stage-listing .entry{grid-template-columns:62px 68px minmax(48px,1fr) 52px 60px}}
-</style></head><body>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#202733;background:#f3f5f8}*{box-sizing:border-box}body{margin:0}.top{padding:14px 22px;background:#17324d;color:white;display:flex;gap:18px;align-items:center;justify-content:space-between}.top h1{font-size:1.25rem;margin:0}.top small{opacity:.8}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.date-range{display:flex;align-items:center;gap:0;margin:0;overflow:hidden;border-radius:5px;background:#e5eaf0}.date-range label{display:flex;align-items:center;gap:4px;padding:0 8px;color:#243344;font-size:.8rem;white-space:nowrap}.date-range input{height:38px;min-width:132px;padding:8px 5px;border:0;background:transparent;color:#243344;font:inherit}.date-range .date-separator{height:38px;padding:8px 10px;border-right:1px solid #cbd4de;border-left:1px solid #cbd4de;border-radius:0;background:#f0f2f5;color:#526174;cursor:default}.date-range .btn[type=submit]{height:38px;padding:8px 10px;border-left:1px solid #cbd4de;border-radius:0}.button-group{display:flex;align-items:center;overflow:hidden;border-radius:5px}.button-group form{margin:0}.button-group select{height:38px;padding:9px 13px;border:0;border-right:1px solid #cbd4de;background:#e5eaf0;color:#243344;font:inherit;cursor:pointer}.button-group .btn{height:38px;border-radius:0;padding:9px 13px}.layout{display:grid;grid-template-columns:minmax(350px,1fr) minmax(320px,1fr);gap:16px;padding:16px;max-width:1600px;margin:auto}.layout.report-layout{grid-template-columns:minmax(0,1fr);max-width:none}.left-column{display:grid;gap:16px;align-content:start;min-width:0}.tabs{display:flex;gap:4px;border-bottom:1px solid #cbd4de}.tab-menu{margin-left:auto}.tab{padding:9px 15px;color:#334155;text-decoration:none;border-radius:6px 6px 0 0}.tab.active{background:#1769aa;color:white}.tab-menu{position:relative}.tab-menu summary{list-style:none;user-select:none}.tab-menu summary::-webkit-details-marker{display:none}.tab-dropdown{position:absolute;top:100%;left:0;z-index:5;display:grid;min-width:190px;padding:5px;background:#fff;border:1px solid #d8dee7;border-radius:0 6px 6px 6px;box-shadow:0 4px 12px #22334422}.tab-dropdown a{padding:9px 10px;color:#334155;text-decoration:none;border-radius:4px;white-space:nowrap}.tab-dropdown a:hover,.tab-dropdown a.active{background:#e8f2fb;color:#1769aa}.preview-panel{position:sticky;top:16px;height:calc(100vh - 100px);min-height:420px}.preview-filename{padding:8px 14px;border-bottom:1px solid #e3e7ec;font-size:.85rem;color:#526174;overflow-wrap:anywhere}.pdf-preview{display:block;width:100%;height:calc(100% - 84px);border:0;background:#e9edf2}.panel{background:white;border:1px solid #d8dee7;border-radius:9px;box-shadow:0 2px 8px #2233440c;overflow:hidden}.panel h2{font-size:1rem;margin:0;padding:14px 16px;border-bottom:1px solid #e3e7ec}.filter-bar{padding:10px 12px;display:flex;gap:8px;border-bottom:1px solid #e3e7ec}.filter-bar input{flex:1;min-width:0;padding:8px 10px;border:1px solid #bbc5d0;border-radius:5px;font:inherit}.listing{max-height:42vh;overflow:auto}.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.entry{display:grid;grid-template-columns:88px 84px minmax(70px,1fr) 82px;gap:8px;padding:9px 12px;border-bottom:1px solid #edf0f3;align-items:center;font-size:.88rem}.bookings-listing .entry{grid-template-columns:78px 84px minmax(70px,1fr) 72px 90px}.stage-listing .entry{grid-template-columns:78px 84px minmax(70px,1fr) 72px 90px}.bookings-listing .entry>span:first-child,.stage-listing .entry>span:first-child{white-space:nowrap}.entry.head{position:sticky;top:0;background:#eef2f6;font-weight:650;z-index:1}.entry.active{background:#e8f2fb}.entry.invalid{box-shadow:inset 3px 0 #c52a36}.entry:not(.head):hover{background:#f0f6fc}.entry a{color:inherit;text-decoration:none}.entry a:hover{text-decoration:underline}.desc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.money{text-align:right;font-variant-numeric:tabular-nums}.negative{color:#b4232d;font-weight:600}.missing{display:block;color:#b4232d;font-size:.7rem;white-space:nowrap}.missing-ref{color:#b4232d!important;font-weight:700}.form{padding:16px}.form fieldset.entry-fields{border:1px solid #d8dee7;border-radius:6px;padding:10px 12px 0;margin:0 0 12px;min-width:0}.form fieldset.entry-fields legend{padding:0 6px;font-size:.85rem;font-weight:650;color:#526174}.form label{display:block;font-size:.85rem;font-weight:600;margin:0 0 12px} .form input,.form select{width:100%;padding:9px;border:1px solid #bbc5d0;border-radius:5px;margin-top:4px;font:inherit}.form input[type=checkbox]{width:auto;padding:0;vertical-align:middle}.form label.field-7 input[type=checkbox]{display:block;width:18px;height:18px;margin:9px 0 0}.form input[readonly]{background:#f2f5f8;color:#526174}.input-with-unit{display:flex;align-items:center;gap:7px;margin-top:4px}.form .input-with-unit input{margin-top:0;text-align:right}.form label.invalid-field input,.form label.invalid-field select{border-color:#c52a36;background:#fff5f5;box-shadow:0 0 0 2px #c52a3622}.form label.invalid-field{color:#a51f2b}.input-unit{color:#526174;white-space:nowrap}.fields{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.fields[hidden]{display:none}.vat-report-body{padding:12px 16px 18px}.vat-report-body p{margin:0 0 14px;color:#526174;font-size:.88rem}.vat-report-body h3{margin:16px 0 8px;font-size:.95rem}.vat-report-body table{width:100%;border-collapse:collapse;font-size:.9rem}.vat-report-body th,.vat-report-body td{padding:8px;border-bottom:1px solid #e3e7ec;text-align:left}.vat-report-body td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.vat-report-body tbody th{width:70px}.vat-report-body tbody tr:hover{background:#f0f6fc}.wide{grid-column:1/-1}@media(min-width:992px){.fields{grid-template-columns:repeat(12,minmax(0,1fr))}.fields label{grid-column:span 6}.fields label:nth-child(-n+3){grid-column:span 4}.fields label.wide{grid-column:1/-1}.fields label.field-4,.fields label.field-5,.fields label.field-6{grid-column:span 4}.fields label.gross-field,.fields label.field-8,.fields label.field-7{grid-column:span 4}.btn{border:0;border-radius:5px;background:#1769aa;color:white;text-decoration:none;padding:9px 13px;font:inherit;cursor:pointer}.btn.secondary{background:#e5eaf0;color:#243344}.btn.danger{background:#a32b32}.actions{display:flex;gap:8px;align-items:center}.actions .new-entry{margin-left:auto}.notice{margin:12px 16px 0;padding:10px;background:#e9f5e9;border-radius:5px}.archive-error{margin:12px;padding:10px 12px;border-radius:5px;background:#fff0f0;color:#a51f2b;border:1px solid #e8b7bb}.extraction-note{margin:10px 16px;padding:10px 12px;border-radius:5px;background:#fff4d6;color:#744d00;font-size:.9rem}.empty{padding:18px;color:#657386}.sum{padding:10px 14px;background:#f7f9fb;text-align:right;font-weight:650}.summary-table{padding:8px 14px;background:#f7f9fb}.summary-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(90px,130px) minmax(90px,130px);gap:8px;padding:5px 0;text-align:right;font-variant-numeric:tabular-nums}.summary-row span:first-child,.summary-row strong:first-child{text-align:left}.summary-head{font-size:.8rem;color:#526174;border-bottom:1px solid #d8dee7}.summary-result{border-top:1px solid #d8dee7;margin-top:4px;font-weight:700}form.inline{display:inline}@media(max-width:850px){.layout{grid-template-columns:1fr}.listing{max-height:55vh}.top{align-items:flex-start;flex-direction:column}.entry{grid-template-columns:75px 68px minmax(70px,1fr) 70px}.bookings-listing .entry{grid-template-columns:62px 68px minmax(48px,1fr) 52px 60px}.stage-listing .entry{grid-template-columns:62px 68px minmax(48px,1fr) 52px 60px}}
+.entry .type{white-space:nowrap}</style></head><body>
 <header class="top"><div><h1>Einnahmenüberschussrechnung · <?=h((string)$year)?></h1><small><?=count($rows)?> Buchungen · <?=count($stagedRows)?> staged</small></div><div class="toolbar"><form method="get" class="date-range button-group"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="tab" value="<?=h($activeTab)?>"><input type="hidden" name="q" value="<?=h($filter)?>"><label>Von <input type="date" name="date_from" value="<?=h($dateFrom)?>"></label><button class="btn secondary date-separator" type="button" tabindex="-1" aria-hidden="true">bis</button><label>Bis <input type="date" name="date_to" value="<?=h($dateTo)?>"></label><button class="btn secondary" type="submit">Anwenden</button></form><div class="button-group"><form method="get"><input type="hidden" name="tab" value="<?=h($activeTab)?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><select name="year" onchange="this.form.elements.date_from.value=this.value+'-01-01';this.form.elements.date_to.value=this.value+'-12-31';this.form.submit()" aria-label="Jahr"><?php foreach($years as $y):?><option value="<?=$y?>" <?=$y===$year?'selected':''?>><?=$y?></option><?php endforeach?></select></form><form method="post" class="inline"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><button class="btn secondary" name="action" value="new_year">Jahr anlegen</button></form></div></div></header>
 <?php if($message!==''):?><div class="notice"><?=h($message)?></div><?php endif?>
-<main class="layout"><div class="left-column"><nav class="tabs" role="tablist"><a role="tab" class="tab <?=$activeTab==='list'?'active':''?>" href="?year=<?=$year?>&amp;tab=list&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?><?=$selected!==false && $selected!==null && isset($rows[$selected])?'&amp;edit='.$selected:''?><?=$stageActive!==null?'&amp;stage_active='.$stageActive:''?>">Belege (<?=count($filteredRows)?>)</a><a role="tab" class="tab <?=$activeTab==='stage'?'active':''?>" href="?year=<?=$year?>&amp;tab=stage&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?><?=$selected!==false && $selected!==null && isset($rows[$selected])?'&amp;edit='.$selected:''?><?=$stageActive!==null?'&amp;stage_active='.$stageActive:''?>">Stage (<?=count($filteredStagedRows)?>)</a><a role="tab" class="tab <?=$activeTab==='form'?'active':''?>" href="?year=<?=$year?>&amp;tab=form&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?><?=$selected!==false && $selected!==null && isset($rows[$selected])?'&amp;edit='.$selected:''?><?=$stageActive!==null?'&amp;stage_active='.$stageActive:''?>">Buchung</a></nav><section class="panel" <?=$activeTab!=='list'?'hidden':''?>><h2>Buchungen</h2><form method="get" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="tab" value="list"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><input type="search" name="q" value="<?=h($filter)?>" placeholder="Belegnummer oder Beschreibung filtern"><button class="btn secondary">Filtern</button><?php if($filter!==''):?><a class="btn secondary" href="?year=<?=$year?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Zurücksetzen</a><?php endif?></form><div class="listing bookings-listing"><div class="entry head"><span>Datum</span><span>Beleg</span><span>Beschreibung</span><span>Typ</span><span class="money">Brutto</span></div>
-<?php foreach($filteredRows as $i=>$r):?><?php $receiptId=$r[1]; $amount=calculatedAmount($r); $financialProblem=validateFinancialRow($r); $receiptFiles=preg_match('/^\d{10}$/',$receiptId)&&archivePdfPath($archiveDir,$year,$receiptId)!==false?[true]:[]; ?><div class="entry <?=$selected===$i?'active':''?> <?=$financialProblem!==''?'invalid':''?>" onclick="window.location='?year=<?=$year?>&amp;edit=<?=$i?>&amp;q=<?=rawurlencode($filter)?>&amp;tab=form&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>'" style="cursor:pointer"><span><?=h($r[0])?></span><span><?php if($receiptId!==''):?><a class="<?=$receiptFiles?'':'missing-ref'?>" <?=$receiptFiles?'':'title="PDF fehlt"'?> href="?year=<?=$year?>&amp;edit=<?=$i?>&amp;q=<?=rawurlencode($filter)?>&amp;tab=form&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>" onclick="event.stopPropagation()"><?=h($receiptId)?></a><?php else:?><?=h($receiptId)?><?php endif?></span><span class="desc" title="<?=h($r[2]??'')?>"><?=h(shortDescription((string)($r[2]??'')))?></span><span><?=h($r[3])?><?=($r[7]??'')==='1'?' · RC':''?></span><span title="<?=h($financialProblem)?>" class="money <?=($amount??0)<0?'negative':''?>"><?=$amount!==null?number_format($amount,2,',','.').' €':'—'?></span></div><?php endforeach?>
-<?php if(!$filteredRows):?><div class="empty"><?=$filter!==''?'Keine Belege für diesen Filter gefunden.':'Noch keine Buchungen in diesem Jahr.'?></div><?php endif?></div><div class="summary-table"><div class="summary-row summary-head"><span></span><span>Netto</span><span>USt/VSt</span></div><div class="summary-row"><strong>Einnahmen</strong><span><?=number_format($incomeNet,2,',','.')?> €</span><span><?=number_format($incomeVat,2,',','.')?> €</span></div><div class="summary-row"><strong>Ausgaben</strong><span><?=number_format($expenseNet,2,',','.')?> €</span><span><?=number_format($expenseVat,2,',','.')?> €</span></div><div class="summary-row summary-result"><strong>Ergebnis</strong><strong><?=number_format($incomeNet-$expenseNet,2,',','.')?> €</strong><strong><?=number_format($incomeVat-$expenseVat,2,',','.')?> €</strong></div></div><form method="post" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><button class="btn secondary" name="action" value="stage_archive">Aktualisieren</button><span>Neue nummerierte PDF-Belege werden zunächst als Staged eingetragen.</span></form></section>
-<section class="panel" <?=$activeTab!=='stage'?'hidden':''?>><h2>Staged-Belege · <?=count($filteredStagedRows)?> vorgemerkt</h2><form method="get" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="tab" value="stage"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><input type="search" name="q" value="<?=h($filter)?>" placeholder="Belegnummer oder Typ filtern"><button class="btn secondary">Filtern</button><?php if($filter!==''):?><a class="btn secondary" href="?year=<?=$year?>&amp;tab=stage&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Zurücksetzen</a><?php endif?></form><div class="listing stage-listing"><div class="entry head"><span>Buchung</span><span>Beleg</span><span>Beschreibung</span><span>Typ</span><span class="money">Brutto</span></div><?php foreach($filteredStagedRows as $i=>$r):?><?php $amount=calculatedAmount($r);?><div class="entry <?=$stageActive===$i?'active':''?>"><span><?=h($r[0])?></span><span><a href="?year=<?=$year?>&amp;stage_edit=<?=$i?>&amp;stage_active=<?=$i?>&amp;tab=form&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>"><?=h($r[1])?></a></span><span class="desc" title="<?=h($r[2]??'')?>"><?=h(shortDescription((string)($r[2]??'')))?></span><span><?=h($r[3])?><?=($r[7]??'')==='1'?' · RC':''?></span><span class="money"><?=$amount!==null?number_format($amount,2,',','.').' €':'—'?></span></div><?php endforeach?><?php if(!$filteredStagedRows):?><div class="empty"><?=$filter!==''?'Keine Stage-Belege für diesen Filter gefunden.':'Keine staged Belege vorhanden.'?></div><?php endif?></div><form method="post" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><button class="btn secondary" name="action" value="stage_archive">Aktualisieren</button><span>Neue nummerierte PDFs werden in Staged.csv vorgemerkt.</span></form></section>
+<main class="layout <?=in_array($activeTab,['vorsteuer','jahreserklaerung'],true)?'report-layout':''?>"><div class="left-column"><nav class="tabs" role="tablist"><a role="tab" class="tab <?=$activeTab==='list'?'active':''?>" href="?year=<?=$year?>&amp;tab=list&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?><?=$selected!==false && $selected!==null && isset($rows[$selected])?'&amp;edit='.$selected:''?><?=$stageActive!==null?'&amp;stage_active='.$stageActive:''?>">Belege (<?=count($filteredRows)?>)</a><a role="tab" class="tab <?=$activeTab==='stage'?'active':''?>" href="?year=<?=$year?>&amp;tab=stage&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?><?=$selected!==false && $selected!==null && isset($rows[$selected])?'&amp;edit='.$selected:''?><?=$stageActive!==null?'&amp;stage_active='.$stageActive:''?>">Stage (<?=count($filteredStagedRows)?>)</a><a role="tab" class="tab <?=$activeTab==='form'?'active':''?>" href="?year=<?=$year?>&amp;tab=form&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?><?=$selected!==false && $selected!==null && isset($rows[$selected])?'&amp;edit='.$selected:''?><?=$stageActive!==null?'&amp;stage_active='.$stageActive:''?>">Buchung</a><details class="tab-menu"><summary class="tab <?=in_array($activeTab,['vorsteuer','jahreserklaerung'],true)?'active':''?>">Dead and Tax</summary><div class="tab-dropdown"><a class="<?=$activeTab==='vorsteuer'?'active':''?>" href="?year=<?=$year?>&amp;tab=vorsteuer&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Vorsteuer</a><a class="<?=$activeTab==='jahreserklaerung'?'active':''?>" href="?year=<?=$year?>&amp;tab=jahreserklaerung&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Jahreserklärung</a></div></details></nav><section class="panel" <?=$activeTab!=='list'?'hidden':''?>><h2>Buchungen</h2><form method="get" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="tab" value="list"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><input type="search" name="q" value="<?=h($filter)?>" placeholder="Belegnummer oder Beschreibung filtern"><button class="btn secondary">Filtern</button><?php if($filter!==''):?><a class="btn secondary" href="?year=<?=$year?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Zurücksetzen</a><?php endif?></form><div class="listing bookings-listing"><div class="entry head"><span>Datum</span><span>Beleg</span><span>Beschreibung</span><span>Typ</span><span class="money">Brutto</span></div>
+<?php foreach($filteredRows as $i=>$r):?><?php $receiptId=$r[1]; $amount=calculatedAmount($r); $financialProblem=validateFinancialRow($r); $receiptFiles=preg_match('/^\d{10}$/',$receiptId)&&archivePdfPath($archiveDir,$year,$receiptId)!==false?[true]:[]; ?><div class="entry <?=$selected===$i?'active':''?> <?=$financialProblem!==''?'invalid':''?>" onclick="window.location='?year=<?=$year?>&amp;edit=<?=$i?>&amp;q=<?=rawurlencode($filter)?>&amp;tab=form&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>'" style="cursor:pointer"><span><?=h($r[0])?></span><span><?php if($receiptId!==''):?><a class="<?=$receiptFiles?'':'missing-ref'?>" <?=$receiptFiles?'':'title="PDF fehlt"'?> href="?year=<?=$year?>&amp;edit=<?=$i?>&amp;q=<?=rawurlencode($filter)?>&amp;tab=form&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>" onclick="event.stopPropagation()"><?=h($receiptId)?></a><?php else:?><?=h($receiptId)?><?php endif?></span><span class="desc" title="<?=h($r[2]??'')?>"><?=h(shortDescription((string)($r[2]??'')))?></span><span class="type"><?=h($r[3])?><?=($r[7]??'')==='1'?' · RC':''?></span><span title="<?=h($financialProblem)?>" class="money <?=($amount??0)<0?'negative':''?>"><?=$amount!==null?number_format($amount,2,',','.').' €':'—'?></span></div><?php endforeach?>
+<?php if(!$filteredRows):?><div class="empty"><?=$filter!==''?'Keine Belege für diesen Filter gefunden.':'Noch keine Buchungen in diesem Jahr.'?></div><?php endif?></div><div class="summary-table"><div class="summary-row summary-head"><span></span><span>Netto</span><span>USt/VSt</span></div><div class="summary-row"><strong>Einnahmen</strong><span><?=number_format($incomeNet,2,',','.')?> €</span><span><?=number_format($incomeVat,2,',','.')?> €</span></div><div class="summary-row"><strong>Ausgaben</strong><span><?=number_format($expenseNet,2,',','.')?> €</span><span><?=number_format($expenseVat,2,',','.')?> €</span></div><div class="summary-row"><strong>Reverse Charge</strong><span>—</span><span><?=number_format(-$reverseChargeVat,2,',','.')?> €</span></div><div class="summary-row summary-result"><strong>Ergebnis</strong><strong><?=number_format($incomeNet-$expenseNet,2,',','.')?> €</strong><strong><?=number_format($vatResult,2,',','.')?> €</strong></div></div><form method="post" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><button class="btn secondary" name="action" value="stage_archive">Aktualisieren</button><span>Neue nummerierte PDF-Belege werden zunächst als Staged eingetragen.</span></form></section>
+<section class="panel" <?=$activeTab!=='stage'?'hidden':''?>><h2>Staged-Belege · <?=count($filteredStagedRows)?> vorgemerkt</h2><?php if(!$archiveExists):?><p class="archive-error">PDF_ARCHIVE-Verzeichnis nicht gefunden: <?=h($archive)?></p><?php endif?><form method="get" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="tab" value="stage"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><input type="search" name="q" value="<?=h($filter)?>" placeholder="Belegnummer oder Typ filtern"><button class="btn secondary">Filtern</button><?php if($filter!==''):?><a class="btn secondary" href="?year=<?=$year?>&amp;tab=stage&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Zurücksetzen</a><?php endif?></form><div class="listing stage-listing"><div class="entry head"><span>Buchung</span><span>Beleg</span><span>Beschreibung</span><span>Typ</span><span class="money">Brutto</span></div><?php foreach($filteredStagedRows as $i=>$r):?><?php $amount=calculatedAmount($r);?><div class="entry <?=$stageActive===$i?'active':''?>"><span><?=h($r[0])?></span><span><a href="?year=<?=$year?>&amp;stage_edit=<?=$i?>&amp;stage_active=<?=$i?>&amp;tab=form&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>"><?=h($r[1])?></a></span><span class="desc" title="<?=h($r[2]??'')?>"><?=h(shortDescription((string)($r[2]??'')))?></span><span class="type"><?=h($r[3])?><?=($r[7]??'')==='1'?' · RC':''?></span><span class="money"><?=$amount!==null?number_format($amount,2,',','.').' €':'—'?></span></div><?php endforeach?><?php if(!$filteredStagedRows):?><div class="empty"><?=$filter!==''?'Keine Stage-Belege für diesen Filter gefunden.':'Keine staged Belege vorhanden.'?></div><?php endif?></div><form method="post" class="filter-bar"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><button class="btn secondary" name="action" value="stage_archive" <?=$archiveExists?'':'disabled'?>>Aktualisieren</button><span>Neue nummerierte PDFs werden in Staged.csv vorgemerkt.</span></form></section>
 <section class="panel" <?=$activeTab!=='form'?'hidden':''?>><h2><?=$isStageEditing?'Staged-Beleg prüfen':($selected!==false && $selected!==null?'Eintrag bearbeiten':'Neuer Eintrag')?></h2><?php if($isStageEditing && $extractionNote!==''):?><p class="extraction-note"><?=h($extractionNote)?></p><?php endif?>
 <form method="post" class="form"><input type="hidden" name="year" value="<?=$year?>"><input type="hidden" name="q" value="<?=h($filter)?>"><input type="hidden" name="date_from" value="<?=h($dateFrom)?>"><input type="hidden" name="date_to" value="<?=h($dateTo)?>"><input type="hidden" name="index" value="<?=$isStageEditing?$stageSelected:($selected!==false && $selected!==null?$selected:'')?>"><input type="hidden" name="source" value="<?=$isStageEditing?'staged':'main'?>"><div class="fields">
-<?php foreach([0,1,3,2,4,5,6,7] as $i): $label=$i===7?'Reverse Charge':HEADERS[$i];?><label class="field-<?=$i?> <?=$i===2?'wide':''?> <?=in_array($i,$formErrorFields,true)?'invalid-field':''?>"><?=h($label)?><?php if($i===7):?><input type="checkbox" name="entry[7]" value="1" <?=$editing[7]==='1'?'checked':''?> aria-label="Reverse Charge"> <?php elseif($i===3):?><select name="entry[<?=$i?>]"><?php foreach($typeOptions as $type):?><option <?=$editing[$i]===$type?'selected':''?>><?=h($type)?></option><?php endforeach?></select><?php else:?><?php $moneyField=in_array($i,[4,5],true); $rateField=$i===6; $shownValue=$moneyField?(is_numeric($formEditing[$i])?displayNumber($formEditing[$i]):$formEditing[$i]):($rateField?($editing[$i]!==''?number_format((float)str_replace(',', '.', $editing[$i]),0,',',''):''):$editing[$i]); ?><?php if($moneyField||$rateField):?><div class="input-with-unit"><input name="entry[<?=$i?>]" value="<?=h($shownValue)?>" inputmode="decimal" <?=$i===4?'placeholder="z. B. 100*-1,5%"':''?> <?=$i===5?'readonly':''?> ><span class="input-unit"><?=$moneyField?'€':'%'?></span></div><?php else:?><input name="entry[<?=$i?>]" value="<?=h($shownValue)?>" <?=$i===0?'type="date"'.(!$isStageEditing?' required':''):''?> <?=$i===1?'placeholder="Belegnummer"':''?> <?=$i===2?'placeholder="Buchungstext"':''?>><?php endif?><?php endif?></label><?php endforeach?></div><div class="actions"><button class="btn" name="action" value="save">Speichern</button><?php if($isStageEditing):?><button class="btn" name="action" value="adopt" formnovalidate <?= $adoptionComplete ? '' : 'disabled' ?>>Übernehmen</button><?php endif?><?php if(!$isStageEditing):?><a class="btn secondary new-entry" href="?year=<?=$year?>&amp;tab=form&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Neu</a><?php endif?><?php if(($isStageEditing) || ($selected!==false && $selected!==null && isset($rows[$selected]))):?><button class="btn danger" name="action" value="delete" formnovalidate <?= $isStageEditing ? '' : 'onclick="return confirm(&quot;Eintrag wirklich löschen?&quot;)"' ?>>Löschen</button><?php endif?></div></form></section></div><section class="panel preview-panel"><h2>Belegvorschau</h2><?php if($previewPdf):?><div class="preview-filename"><?=h(basename($previewPdf))?></div><?php endif?><iframe id="pdfPreview" name="pdfPreview" class="pdf-preview" title="PDF-Beleg" src="<?=$previewReceipt!==''?'?year='.$year.'&amp;beleg='.rawurlencode($previewReceipt):'about:blank'?>"></iframe><?php if($previewReceipt===''):?><div class="empty">Belegnummer anklicken, um das PDF hier anzuzeigen.</div><?php endif?></section></main><script>
+<?php foreach([0,1,3,2,4,5,6,8,7] as $i): if($i===8):?></div><fieldset class="entry-fields"><legend>BFM Unsinn</legend><div class="fields"><?php $initialGross=is_numeric($formEditing[4]??null)&&is_numeric($formEditing[5]??null)?number_format((float)$formEditing[4]+(float)$formEditing[5],2,',','.') : '';?><label class="gross-field">Brutto<div class="input-with-unit"><input id="grossAmount" value="<?=h($initialGross)?>" readonly aria-label="Berechneter Bruttobetrag"><span class="input-unit">€</span></div></label><?php endif; $label=$i===7?'Reverse Charge':HEADERS[$i];?><label class="field-<?=$i?> <?=$i===2?'wide':''?> <?=in_array($i,$formErrorFields,true)?'invalid-field':''?>"><?=h($label)?><?php if($i===7):?><input type="checkbox" name="entry[7]" value="1" <?=$editing[7]==='1'?'checked':''?> aria-label="Reverse Charge"> <?php elseif($i===3):?><select name="entry[<?=$i?>]"><?php foreach($typeOptions as $type):?><option <?=$editing[$i]===$type?'selected':''?>><?=h($type)?></option><?php endforeach?></select><?php elseif($i===8):?><select name="entry[8]"><option value="">Land auswählen</option><?php foreach($countriesByGroup as $group=>$options): if(!$options) continue;?><optgroup label="<?=h($group==='NONEU'?'Nicht-EU':($group==='EU'?'EU':'Weitere'))?>"><?php foreach($options as $code=>$country):?><option value="<?=h($code)?>" <?=($editing[8]??"")===$code?"selected":""?>><?=h($country)?></option><?php endforeach?></optgroup><?php endforeach?></select><?php else:?><?php $moneyField=in_array($i,[4,5],true); $rateField=$i===6; $shownValue=$moneyField?(is_numeric($formEditing[$i])?displayNumber($formEditing[$i]):$formEditing[$i]):($rateField?($editing[$i]!==''?number_format((float)str_replace(',', '.', $editing[$i]),0,',',''):''):$editing[$i]); ?><?php if($moneyField||$rateField):?><div class="input-with-unit"><input name="entry[<?=$i?>]" value="<?=h($shownValue)?>" inputmode="decimal" <?=$i===4?'placeholder="z. B. 100*-1,5%"':''?> <?=$i===5?'readonly':''?> ><span class="input-unit"><?=$moneyField?'€':'%'?></span></div><?php else:?><input name="entry[<?=$i?>]" value="<?=h($shownValue)?>" <?=$i===0?'type="date"'.(!$isStageEditing?' required':''):''?> <?=$i===1?'placeholder="Belegnummer"':''?> <?=$i===2?'placeholder="Buchungstext"':''?>><?php endif?><?php endif?></label><?php endforeach?></div></fieldset><div class="actions"><button class="btn" name="action" value="save">Speichern</button><?php if($isStageEditing):?><button class="btn" name="action" value="adopt" formnovalidate <?= $adoptionComplete ? '' : 'disabled' ?>>Übernehmen</button><?php endif?><?php if(!$isStageEditing):?><a class="btn secondary new-entry" href="?year=<?=$year?>&amp;tab=form&amp;q=<?=rawurlencode($filter)?>&amp;date_from=<?=h($dateFrom)?>&amp;date_to=<?=h($dateTo)?>">Neu</a><?php endif?><?php if(($isStageEditing) || ($selected!==false && $selected!==null && isset($rows[$selected]))):?><button class="btn danger" name="action" value="delete" formnovalidate <?= $isStageEditing ? '' : 'onclick="return confirm(&quot;Eintrag wirklich löschen?&quot;)"' ?>>Löschen</button><?php endif?></div></form></section><section class="panel vat-report" <?=$activeTab!=="vorsteuer"?'hidden':''?>><h2>Vorsteuer · USt-Voranmeldung</h2><div class="vat-report-body"><p>Zeitraum <?=h($dateFrom)?> bis <?=h($dateTo)?></p><table><thead><tr><th>Kz.</th><th>ELSTER-Feld</th><th>Bemessungsgrundlage</th><th>Steuer / Vorsteuer</th></tr></thead><tbody><?php foreach($vatUstvaRows as [$code,$label,$base,$tax]):?><tr><th><?=h($code)?></th><td><?=h($label)?></td><td><?=h($reportBase($base))?></td><td><?=h($reportTax($tax))?></td></tr><?php endforeach?></tbody></table><p>Enthalten sind die aus den Buchungen ableitbaren Felder. Weitere ELSTER-Angaben (z. B. innergemeinschaftliche Warenkäufe, Einfuhrumsatzsteuer, steuerfreie Umsätze oder Vorauszahlungen) sind nicht in der CSV erfasst.</p></div></section><section class="panel vat-report" <?=$activeTab!=="jahreserklaerung"?'hidden':''?>><h2>USt-Jahreserklärung <?=h((string)$annualYear)?></h2><div class="vat-report-body"><?php if(!$annualAvailable):?><p>Vorjahresdaten (<?=h((string)$annualYear)?>/EUER.csv) nicht vorhanden.</p><?php endif?><table><thead><tr><th>Kz.</th><th>ELSTER-Feld</th><th>Bemessungsgrundlage</th><th>Steuer / Vorsteuer</th></tr></thead><tbody><?php foreach($vatAnnualRows as [$code,$label,$base,$tax]):?><tr><th><?=h($code)?></th><td><?=h($label)?></td><td><?=h($annualAvailable ? $reportBase($base) : '—')?></td><td><?=h($annualAvailable ? $reportTax($tax) : '—')?></td></tr><?php endforeach?></tbody></table><p>Enthalten sind die aus den Vorjahresbuchungen ableitbaren Felder. Weitere ELSTER-Angaben (z. B. innergemeinschaftliche Warenkäufe, Einfuhrumsatzsteuer, steuerfreie Umsätze oder Vorauszahlungen) sind nicht in der CSV erfasst.</p></div></section></div><?php if(!in_array($activeTab,['vorsteuer','jahreserklaerung'],true)):?><section class="panel preview-panel"><h2>Belegvorschau</h2><?php if($previewPdf):?><div class="preview-filename"><?=h(basename($previewPdf))?></div><?php endif?><iframe id="pdfPreview" name="pdfPreview" class="pdf-preview" title="PDF-Beleg" src="<?=$previewReceipt!==''?'?year='.$year.'&amp;beleg='.rawurlencode($previewReceipt):'about:blank'?>"></iframe><?php if($previewReceipt===''):?><div class="empty">Belegnummer anklicken, um das PDF hier anzuzeigen.</div><?php endif?></section><?php endif?></main><script>
 const firstInvalid=document.querySelector('.form label.invalid-field input,.form label.invalid-field select');
 if(firstInvalid){firstInvalid.focus();firstInvalid.scrollIntoView({behavior:'smooth',block:'center'});}
 const bookingsListing=document.querySelector('.bookings-listing');
@@ -658,6 +739,7 @@ if(bookingForm){
   const netField=bookingForm.querySelector('[name="entry[4]"]');
   const taxField=bookingForm.querySelector('[name="entry[5]"]');
   const rateField=bookingForm.querySelector('[name="entry[6]"]');
+  const grossField=bookingForm.querySelector('#grossAmount');
   const number=value=>{
     value=(value||'').trim();
     const discount=value.match(/^(.+)\*-([0-9]+(?:[,.][0-9]+)?)%$/);
@@ -679,10 +761,15 @@ if(bookingForm){
   bookingForm.addEventListener('submit',()=>amountFields.forEach(sanitizeAmount));
   const setDonationTax=()=>{if(typeField.value==='Spenden'){taxField.value='0';rateField.value='0';}};
   const setNetOnlyDefaults=()=>{if(typeField.value!=='Spenden'&&netField.value.trim()!==''&&taxField.value.trim()===''&&rateField.value.trim()===''){taxField.value='0';rateField.value='0';}};
+  const recalculateGross=()=>{
+    const net=number(netField.value), tax=number(taxField.value);
+    grossField.value=net!==null&&tax!==null?(net+tax).toFixed(2).replace('.',','):'';
+  };
   const recalculateTax=()=>{
-    if(typeField.value==='Spenden'){taxField.value='0';return;}
+    if(typeField.value==='Spenden'){taxField.value='0';recalculateGross();return;}
     const net=number(netField.value), rate=number(rateField.value);
     taxField.value=net!==null&&rate!==null?(net*Math.round(rate)/100).toFixed(2).replace('.',','):'';
+    recalculateGross();
   };
   typeField.addEventListener('change',setDonationTax);
   typeField.addEventListener('change',recalculateTax);
@@ -692,6 +779,7 @@ if(bookingForm){
   rateField.addEventListener('input',recalculateTax);
   setDonationTax();
   recalculateTax();
+  taxField.addEventListener('input',recalculateGross);
   const adoptButton=bookingForm.querySelector('[name="action"][value="adopt"]');
   if(adoptButton){
     const field=name=>bookingForm.querySelector('[name="entry['+name+']"]');

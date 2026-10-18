@@ -1,0 +1,5 @@
+PDF_ARCHIVE=/PDF_Archive
+EUER_DEFAULT_TYPE=Leistung
+# Coutries for RC
+EU="DE,NL"
+NONEU="US"

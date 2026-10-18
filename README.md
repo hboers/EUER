@@ -11,7 +11,7 @@ Die lokale PHP-Anwendung erfasst und prüft Buchungen, ordnet PDF-Belege zu und 
 - PHP CLI 8 oder neuer
 - Bash und `curl`
 - Webbrowser
-- `pdftotext` und Python 3 für die PDF-Texterkennung und den SQLite-Cache
+- `pdftotext` für die PDF-Texterkennung
 
 Für die Umrechnung von USD in EUR ist eine Internetverbindung zum Abruf der EZB-Referenzkurse erforderlich.
 
@@ -32,6 +32,8 @@ Die Anwendung liest `.env` aus dem Anwendungsverzeichnis. Beispiel:
 ```dotenv
 PDF_ARCHIVE=/path/to/pdf-archive
 EUER_DEFAULT_TYPE=Leistung
+EU="DE,NL"
+NONEU="US"
 ```
 
 `PDF_ARCHIVE` gibt den Speicherort des Belegarchivs an. Relative Pfade werden vom Anwendungsverzeichnis aus aufgelöst. Erwartet werden Jahresordner mit nummerierten PDF-Dateien, zum Beispiel:
@@ -44,6 +46,8 @@ pdf-archive/
 
 `EUER_DEFAULT_TYPE` legt die vorausgewählte Buchungsart fest. Zulässige Werte sind `Einnahmen`, `Leistung`, `Ware`, `Sonstiges` und `Spenden`.
 
+`EU` und `NONEU` enthalten kommaseparierte Listen der zweistelligen Länderkürzel, die im Länderfeld des Formulars angeboten werden. Der Select zeigt die Ländernamen gruppiert nach EU und Nicht-EU an; gespeichert wird das jeweilige Kürzel.
+
 ## Datendateien
 
 Die Anwendung legt ihre Daten pro Jahr ab:
@@ -53,16 +57,17 @@ YYYY/EUER.csv       gespeicherte Buchungen
 YYYY/Staged.csv     noch zu prüfende Belege
 YYYY/Ignored.csv    entfernte Stage-Belegnummern
 YYYY/backups/       CSV-Sicherungen
-YYYY/*.sqlite       Cache der PDF-Texterkennung
 ```
+
+Die PDF-Texterkennung liest das PDF beim Öffnen eines Stage-Belegs direkt aus. Die Suche durchsucht ausschließlich die CSV-Daten und öffnet keine PDF-Dateien.
 
 CSV-Dateien verwenden UTF-8 mit BOM und Semikolon als Trennzeichen. Das Buchungsschema lautet:
 
 ```text
-Buchung;Beleg;Beschreibung;Typ;Netto;UST/VST;UST/VST %;RC
+Buchung;Beleg;Beschreibung;Typ;Netto;UST/VST;UST/VST %;RC;Land
 ```
 
-`RC` enthält `1` für Buchungen mit Reverse-Charge-Kennzeichnung und ist andernfalls leer. Vor Änderungen erstellt die Anwendung Sicherungen und behält je CSV-Datei höchstens fünf Sicherungen. Ältere CSV-Schemata werden beim Laden migriert.
+`RC` enthält `1` für Buchungen mit Reverse-Charge-Kennzeichnung und ist andernfalls leer. `Land` speichert das ausgewählte zweistellige ISO-Länderkürzel des Leistungserbringers. Vor Änderungen erstellt die Anwendung Sicherungen und behält je CSV-Datei höchstens fünf Sicherungen. Ältere CSV-Schemata werden beim Laden migriert.
 
 ## Projektvermerk
 
