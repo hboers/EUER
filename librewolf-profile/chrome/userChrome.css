@@ -1,0 +1,9 @@
+/* LibreWolf wie ein normales Anwendungsfenster ohne Browser-Bedienelemente. */
+#navigator-toolbox,
+#sidebar-main,
+#sidebar-box,
+#sidebar-splitter,
+#statuspanel,
+findbar {
+    display: none !important;
+}
