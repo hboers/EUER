@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=PDF New
+Comment=Starte EUER im Browser
+Path=~/Sync/SynologyDrive/EUER
+Exec=./serv.sh
+Terminal=false
+Icon=application-pdf
+Categories=Utility;
