@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 set -euo pipefail
 address="127.0.0.1:8003"
-url="http://${address}"
+url="http://${address}?year=$(date +%Y)"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 php -S "$address" "$script_dir/index.php" &
 server_pid=$!
